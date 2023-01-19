@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:fl_chart/src/chart/base/axis_chart/axis_chart_scaffold_widget.dart';
+import 'package:fl_chart/src/chart/line_chart/line_chart_painter.dart';
 import 'package:fl_chart/src/chart/line_chart/line_chart_renderer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class LineChart extends ImplicitlyAnimatedWidget {
     super.key,
     Duration swapAnimationDuration = const Duration(milliseconds: 150),
     Curve swapAnimationCurve = Curves.linear,
+    this.painter,
   }) : super(
           duration: swapAnimationDuration,
           curve: swapAnimationCurve,
@@ -28,6 +30,8 @@ class LineChart extends ImplicitlyAnimatedWidget {
   /// We pass this key to our renderers which are supposed to
   /// render the chart itself (without anything around the chart).
   final Key? chartRendererKey;
+
+  final LineChartPainter? painter;
 
   /// Creates a [_LineChartState]
   @override
@@ -56,6 +60,7 @@ class _LineChartState extends AnimatedWidgetBaseState<LineChart> {
         data: _withTouchedIndicators(_lineChartDataTween!.evaluate(animation)),
         targetData: _withTouchedIndicators(showingData),
         key: widget.chartRendererKey,
+        painter: widget.painter ?? LineChartPainter(),
       ),
       data: showingData,
     );

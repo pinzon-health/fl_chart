@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:fl_chart/src/chart/base/base_chart/base_chart_painter.dart';
 import 'package:fl_chart/src/chart/base/base_chart/render_base_chart.dart';
+import 'package:fl_chart/src/chart/line_chart/line_chart_heat_painter.dart';
 import 'package:fl_chart/src/chart/line_chart/line_chart_painter.dart';
 import 'package:fl_chart/src/utils/canvas_wrapper.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,18 +15,20 @@ class LineChartLeaf extends LeafRenderObjectWidget {
     super.key,
     required this.data,
     required this.targetData,
+    required this.painter,
   });
 
   final LineChartData data;
   final LineChartData targetData;
+  final LineChartPainter painter;
 
   @override
   RenderLineChart createRenderObject(BuildContext context) => RenderLineChart(
-        context,
-        data,
-        targetData,
-        MediaQuery.of(context).textScaleFactor,
-      );
+      context,
+      data,
+      targetData,
+      MediaQuery.of(context).textScaleFactor,
+      painter);
 
   @override
   void updateRenderObject(BuildContext context, RenderLineChart renderObject) {
@@ -45,9 +48,11 @@ class RenderLineChart extends RenderBaseChart<LineTouchResponse> {
     LineChartData data,
     LineChartData targetData,
     double textScale,
+    LineChartPainter painter,
   )   : _data = data,
         _targetData = targetData,
         _textScale = textScale,
+        painter = painter,
         super(targetData.lineTouchData, context);
 
   LineChartData get data => _data;

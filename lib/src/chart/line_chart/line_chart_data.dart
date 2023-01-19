@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:equatable/equatable.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:fl_chart/src/chart/line_chart/line_chart_helper.dart';
+import 'package:fl_chart/src/chart/line_chart/line_chart_painter.dart';
 import 'package:fl_chart/src/extensions/color_extension.dart';
 import 'package:fl_chart/src/extensions/gradient_extension.dart';
 import 'package:fl_chart/src/utils/lerp.dart';
@@ -260,8 +261,10 @@ class LineChartBarData with EquatableMixin {
     List<int>? showingIndicators,
     this.dashArray,
     Shadow? shadow,
+    this.linePainter,
     bool? isStepLineChart,
     LineChartStepData? lineChartStepData,
+    this.painter,
   })  : spots = spots ?? const [],
         show = show ?? true,
         color =
@@ -339,6 +342,8 @@ class LineChartBarData with EquatableMixin {
   /// We keep the most bottom spot to prevent redundant calculations
   late final FlSpot mostBottomSpot;
 
+  final LineChartPainter? painter;
+
   /// Determines to show or hide the line.
   final bool show;
 
@@ -399,6 +404,9 @@ class LineChartBarData with EquatableMixin {
   /// Holds data for representing a Step Line Chart, and works only if [isStepChart] is true.
   final LineChartStepData lineChartStepData;
 
+  // Gives full control over painting lines
+  final Paint? linePainter;
+
   /// Lerps a [LineChartBarData] based on [t] value, check [Tween.lerp].
   static LineChartBarData lerp(
     LineChartBarData a,
@@ -406,31 +414,31 @@ class LineChartBarData with EquatableMixin {
     double t,
   ) {
     return LineChartBarData(
-      show: b.show,
-      barWidth: lerpDouble(a.barWidth, b.barWidth, t),
-      belowBarData: BarAreaData.lerp(a.belowBarData, b.belowBarData, t),
-      aboveBarData: BarAreaData.lerp(a.aboveBarData, b.aboveBarData, t),
-      curveSmoothness: b.curveSmoothness,
-      isCurved: b.isCurved,
-      isStrokeCapRound: b.isStrokeCapRound,
-      isStrokeJoinRound: b.isStrokeJoinRound,
-      preventCurveOverShooting: b.preventCurveOverShooting,
-      preventCurveOvershootingThreshold: lerpDouble(
-        a.preventCurveOvershootingThreshold,
-        b.preventCurveOvershootingThreshold,
-        t,
-      ),
-      dotData: FlDotData.lerp(a.dotData, b.dotData, t),
-      dashArray: lerpIntList(a.dashArray, b.dashArray, t),
-      color: Color.lerp(a.color, b.color, t),
-      gradient: Gradient.lerp(a.gradient, b.gradient, t),
-      spots: lerpFlSpotList(a.spots, b.spots, t),
-      showingIndicators: b.showingIndicators,
-      shadow: Shadow.lerp(a.shadow, b.shadow, t),
-      isStepLineChart: b.isStepLineChart,
-      lineChartStepData:
-          LineChartStepData.lerp(a.lineChartStepData, b.lineChartStepData, t),
-    );
+        show: b.show,
+        barWidth: lerpDouble(a.barWidth, b.barWidth, t),
+        belowBarData: BarAreaData.lerp(a.belowBarData, b.belowBarData, t),
+        aboveBarData: BarAreaData.lerp(a.aboveBarData, b.aboveBarData, t),
+        curveSmoothness: b.curveSmoothness,
+        isCurved: b.isCurved,
+        isStrokeCapRound: b.isStrokeCapRound,
+        isStrokeJoinRound: b.isStrokeJoinRound,
+        preventCurveOverShooting: b.preventCurveOverShooting,
+        preventCurveOvershootingThreshold: lerpDouble(
+          a.preventCurveOvershootingThreshold,
+          b.preventCurveOvershootingThreshold,
+          t,
+        ),
+        dotData: FlDotData.lerp(a.dotData, b.dotData, t),
+        dashArray: lerpIntList(a.dashArray, b.dashArray, t),
+        color: Color.lerp(a.color, b.color, t),
+        gradient: Gradient.lerp(a.gradient, b.gradient, t),
+        spots: lerpFlSpotList(a.spots, b.spots, t),
+        showingIndicators: b.showingIndicators,
+        shadow: Shadow.lerp(a.shadow, b.shadow, t),
+        isStepLineChart: b.isStepLineChart,
+        lineChartStepData:
+            LineChartStepData.lerp(a.lineChartStepData, b.lineChartStepData, t),
+        painter: b.painter);
   }
 
   /// Copies current [LineChartBarData] to a new [LineChartBarData],
@@ -478,6 +486,7 @@ class LineChartBarData with EquatableMixin {
       shadow: shadow ?? this.shadow,
       isStepLineChart: isStepLineChart ?? this.isStepLineChart,
       lineChartStepData: lineChartStepData ?? this.lineChartStepData,
+      painter: painter,
     );
   }
 
@@ -503,6 +512,7 @@ class LineChartBarData with EquatableMixin {
         shadow,
         isStepLineChart,
         lineChartStepData,
+        painter,
       ];
 }
 

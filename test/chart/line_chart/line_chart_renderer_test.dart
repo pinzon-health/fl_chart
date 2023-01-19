@@ -44,11 +44,7 @@ void main() {
 
     final mockBuildContext = MockBuildContext();
     final renderLineChart = RenderLineChart(
-      mockBuildContext,
-      data,
-      targetData,
-      textScale,
-    );
+        mockBuildContext, data, targetData, textScale, LineChartPainter());
 
     final mockPainter = MockLineChartPainter();
     final mockPaintingContext = MockPaintingContext();

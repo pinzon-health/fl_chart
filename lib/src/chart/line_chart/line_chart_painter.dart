@@ -60,6 +60,8 @@ class LineChartPainter extends AxisChartPainter<LineChartData> {
   late Paint _imagePaint;
   late Paint _borderTouchTooltipPaint;
 
+  Paint get barPaint => _barPaint;
+
   /// Paints [LineChartData] into the provided canvas.
   @override
   void paint(
@@ -106,7 +108,12 @@ class LineChartPainter extends AxisChartPainter<LineChartData> {
         continue;
       }
 
-      drawBarLine(canvasWrapper, barData, holder);
+      if (barData.painter != null) {
+        barData.painter!.drawBarLine(canvasWrapper, barData, holder);
+      } else {
+        drawBarLine(canvasWrapper, barData, holder);
+      }
+
       drawDots(canvasWrapper, barData, holder);
 
       if (data.extraLinesData.extraLinesOnTop) {
